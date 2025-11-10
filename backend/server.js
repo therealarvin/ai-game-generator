@@ -15,8 +15,14 @@ const PORT = process.env.PORT || 3001;
 
 console.log('✅ Express app created');
 
-app.use(cors());
+// Configure CORS to allow frontend origin
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+};
+app.use(cors(corsOptions));
 console.log('✅ CORS enabled');
+console.log('   Allowed origin:', corsOptions.origin);
 
 app.use(express.json());
 console.log('✅ JSON parsing enabled');

@@ -1,0 +1,35 @@
+services:
+  # Backend API Service
+  - type: web
+    name: ai-game-generator-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: OPENAI_API_KEY
+        sync: false  # Set this in Render dashboard
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: ai-game-generator-frontend
+          property: url
+
+  # Frontend Static Site
+  - type: web
+    name: ai-game-generator-frontend
+    env: static
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: ai-game-generator-backend
+          property: url
+
