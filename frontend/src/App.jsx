@@ -282,10 +282,12 @@ function App() {
               <div className="flex-1">
                 <p className="font-medium text-destructive">Backend Not Connected</p>
                 <p className="text-sm text-destructive/80 mt-1">
-                  Cannot reach backend at <code className="bg-destructive/20 px-1 rounded">http://localhost:4000</code>
+                  Cannot reach backend at <code className="bg-destructive/20 px-1 rounded">{API_URL}</code>
                 </p>
                 <p className="text-sm text-destructive/80 mt-1">
-                  Make sure the backend server is running: <code className="bg-destructive/20 px-1 rounded">cd backend && npm start</code>
+                  {import.meta.env.VITE_API_URL 
+                    ? 'Check that the backend is deployed and the URL is correct.'
+                    : 'Make sure the backend server is running: cd backend && npm start'}
                 </p>
               </div>
             </div>
