@@ -16,13 +16,41 @@ const PORT = process.env.PORT || 3001;
 console.log('✅ Express app created');
 
 // Configure CORS to allow frontend origin
+// Allow multiple origins: Vercel frontend, localhost for development, and any .vercel.app domain
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:3000',
+  /\.vercel\.app$/
+].filter(Boolean); // Remove undefined values
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin matches any allowed origin
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (typeof allowed === 'string') {
+        return origin === allowed;
+      } else if (allowed instanceof RegExp) {
+        return allowed.test(origin);
+      }
+      return false;
+    });
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.log('⚠️  CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 };
 app.use(cors(corsOptions));
 console.log('✅ CORS enabled');
-console.log('   Allowed origin:', corsOptions.origin);
+console.log('   Allowed origins:', allowedOrigins);
 
 app.use(express.json());
 console.log('✅ JSON parsing enabled');
