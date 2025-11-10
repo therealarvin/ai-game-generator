@@ -12,24 +12,7 @@ services:
       - key: PORT
         value: 10000
       - key: OPENAI_API_KEY
-        sync: false  # Set this in Render dashboard
+        sync: false  # Set this in Render dashboard with your OpenAI API key
       - key: FRONTEND_URL
-        fromService:
-          type: web
-          name: ai-game-generator-frontend
-          property: url
-
-  # Frontend Static Site
-  - type: web
-    name: ai-game-generator-frontend
-    env: static
-    plan: free
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/dist
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: ai-game-generator-backend
-          property: url
+        sync: false  # Set this in Render dashboard with your Vercel frontend URL (e.g., https://your-app.vercel.app)
 
