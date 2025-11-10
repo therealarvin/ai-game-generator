@@ -20,8 +20,7 @@ console.log('✅ Express app created');
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'http://localhost:5173',
-  'http://localhost:3000',
-  /\.vercel\.app$/
+  'http://localhost:3000'
 ].filter(Boolean); // Remove undefined values
 
 const corsOptions = {
@@ -29,17 +28,13 @@ const corsOptions = {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    // Check if origin matches any allowed origin
-    const isAllowed = allowedOrigins.some(allowed => {
-      if (typeof allowed === 'string') {
-        return origin === allowed;
-      } else if (allowed instanceof RegExp) {
-        return allowed.test(origin);
-      }
-      return false;
-    });
+    // Check if origin matches any allowed origin string
+    const isAllowedString = allowedOrigins.some(allowed => origin === allowed);
     
-    if (isAllowed) {
+    // Also allow any .vercel.app domain
+    const isVercelDomain = /^https?:\/\/[^\/]+\.vercel\.app$/.test(origin);
+    
+    if (isAllowedString || isVercelDomain) {
       callback(null, true);
     } else {
       console.log('⚠️  CORS blocked origin:', origin);
